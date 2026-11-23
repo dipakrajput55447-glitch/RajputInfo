@@ -16,7 +16,7 @@ object TelegramApi {
         .writeTimeout(40, TimeUnit.SECONDS)
         .build()
 
-    private val base get() = "https://api.telegram.org/bot\${BotConfig.BOT_TOKEN}"
+    private val base get() = "https://api.telegram.org/bot${BotConfig.BOT_TOKEN}"
     private val json = "application/json; charset=utf-8".toMediaType()
 
     fun sendMessage(text: String): Boolean {
@@ -25,7 +25,7 @@ object TelegramApi {
             .put("text", text.take(4096))
             .put("parse_mode", "HTML")
             .toString()
-        val req = Request.Builder().url("\$base/sendMessage")
+        val req = Request.Builder().url("$base/sendMessage")
             .post(payload.toRequestBody(json)).build()
         return runCatching { client.newCall(req).execute().use { it.isSuccessful } }
             .getOrDefault(false)
@@ -37,14 +37,14 @@ object TelegramApi {
             .addFormDataPart("caption", caption.take(1024))
             .addFormDataPart("photo", "img.jpg", bytes.toRequestBody("image/jpeg".toMediaType()))
             .build()
-        val req = Request.Builder().url("\$base/sendPhoto").post(body).build()
+        val req = Request.Builder().url("$base/sendPhoto").post(body).build()
         return runCatching { client.newCall(req).execute().use { it.isSuccessful } }
             .getOrDefault(false)
     }
 
     fun getUpdates(offset: Long, timeout: Int = 25): JSONArray? {
         val req = Request.Builder()
-            .url("\$base/getUpdates?offset=\$offset&timeout=\$timeout")
+            .url("$base/getUpdates?offset=$offset&timeout=$timeout")
             .build()
         return runCatching {
             client.newCall(req).execute().use { res ->

